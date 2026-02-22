@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <header class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <h1>Search Results for "<span th:text="${query}"></span>"</h1>
+            <!-- Back to Home Button -->
+            <a href="/home" class="btn btn-light mt-3">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+        </div>
+    </header>
+
+    <div class="container my-5">
+        <div class="row">
+            <th:block th:if="${products.isEmpty()}">
+                <div class="col-12">
+                    <p class="text-center">No products found for "<span th:text="${query}"></span>".</p>
+                </div>
+            </th:block>
+
+            <!-- Loop through products -->
+            <th:block th:each="product : ${products}">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img th:src="@{${product.image}}" alt="Product Image" class="card-img-top">
+                        <div class="card-body text-center">
+                            <h4 class="card-title" th:text="${product.title}"></h4>
+                            <h5 class="text-danger" th:text="'₹'+${product.price}"></h5>
+                            <p class="card-text" th:text="${product.description}"></p>
+                            <a th:href="@{'/productsview/' + ${product.id}}" class="btn btn-warning">Buy</a>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <p>&copy; 2024 eTextile. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

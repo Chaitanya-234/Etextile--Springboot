@@ -1,0 +1,44 @@
+<!-- admin-dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .dashboard {
+            text-align: center;
+            margin: 20px auto;
+        }
+        .dashboard a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .dashboard a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <h1>Admin Dashboard</h1>
+        <a href="/admin/products">Manage Products</a>
+        <a href="/admin/users">Manage Users</a>
+        <a href="/admin/orders">Manage Orders</a>
+        <a href="/admin/logout">Logout</a>
+    </div>
+
+</body>
+</html>

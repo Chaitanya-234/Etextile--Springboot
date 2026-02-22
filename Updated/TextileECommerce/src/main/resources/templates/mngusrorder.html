@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        table th {
+            background-color: #007bff;
+            color: white;
+        }
+        .status-dropdown {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .btn-update {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-update:hover {
+            background-color: #218838;
+        }
+        .btn-delete {
+            background-color: #ff6b6b;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-delete:hover {
+            background-color: #e55039;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Manage User Orders</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>User Name</th>
+                <th>Products</th>
+                <th>Total Price</th>
+                <th>Order Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through orders in the controller -->
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id}">OrderID</td>
+                <td th:text="${order.name}">John Doe</td>
+                <td>
+                    <ul>
+                        <!-- Loop through the products in the order -->
+                        <li th:each="product : ${order}" th:text="${order.productName}">Product Name</li>
+                    </ul>
+                </td>
+                <td>₹<span th:text="${order.totalPrice}">1999</span></td>
+                <td>
+                    <form th:action="@{'/admin/orders/update/' + ${order.id}}" method="post">
+                        <select name="status" class="status-dropdown">
+                            <option th:value="Pending" th:selected="${order.status == 'Pending'}">Pending</option>
+                            <option th:value="Shipped" th:selected="${order.status == 'Shipped'}">Shipped</option>
+                            <option th:value="Delivered" th:selected="${order.status == 'Delivered'}">Delivered</option>
+                            <option th:value="Cancelled" th:selected="${order.status == 'Cancelled'}">Cancelled</option>
+                        </select>
+                        <button type="submit" class="btn-update">Update</button>
+                    </form>
+                </td>
+                <td>
+                    <form th:action="@{'/admin/orders/delete/' + ${order.id}}" method="post">
+                        <button type="submit" class="btn-delete">Delete Order</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="/admin/dashboard" class="btn btn-primary">Back to Dashboard</a>
+</div>
+
+</body>
+</html>

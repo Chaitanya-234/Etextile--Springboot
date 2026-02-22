@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Saved Addresses</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <h1>Checkout</h1>
+        </div>
+    </header>
+
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h4>Your Cart</h4>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="cartItem : ${cartItems}">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img th:src="${cartItem.product.image}" alt="Product Image" class="img-thumbnail" style="width: 50px; height: 50px;">
+                                    <span class="ml-2" th:text="${cartItem.product.title}"></span>
+                                </div>
+                            </td>
+                            <td th:text="'₹'+${cartItem.product.price}"></td>
+                            <td th:text="${cartItem.quantity}"></td>
+                            <td th:text="'₹'+(${cartItem.product.discountPrice} * ${cartItem.quantity})"></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-right">Total Price:</th>
+                            <th name="totalprice" th:text="'₹'+${totalPrice}"></th>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <!-- Saved Addresses Section -->
+                <div class="container mt-5">
+                    <h2 class="text-center mb-4">Your Saved Addresses</h2>
+                    <form th:action="@{/payment/cart/rpay}" method="post">
+                        <input type="hidden" name="paymentType" value="COD"/>
+                        <div class="form-group row">
+                            <label for="mobile" class="col-sm-3 col-form-label">Mobile Number</label>
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
+                                    </div>
+                                    <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="Enter your mobile number" required pattern="[0-9]{10}" title="Enter a valid 10-digit mobile number">
+                                </div>
+                                <small class="form-text text-muted">We’ll use this number to contact you regarding your order.</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Loop through user addresses and provide selection -->
+                            <div class="col-md-4" th:each="address, iterStat : ${userAddresses}">
+                                <div class="card shadow mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${address.label}">Home</h5>
+                                        <p class="card-text">
+                                            <span th:text="${address.street}">1234 Street</span>,<br>
+                                            <span th:text="${address.city}">City</span>,<br>
+                                            <span th:text="${address.state}">State</span>,<br>
+                                            <span th:text="${address.zipCode}">ZipCode</span>,<br>
+                                            <span th:text="${address.country}">Country</span>
+                                        </p>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="selectedAddress" th:value="${iterStat.index}" th:checked="${iterStat.index == 0}">
+                                            <label class="form-check-label">Use this Address</label>
+                                        </div>
+                                        <a th:if="${user.addresses.size() > 1}" 
+                                            th:href="@{/user/delete-add/{idx}(idx=${iterStat.index})}"  class="btn btn-danger btn-sm mt-2"
+                                            onclick="return confirm('Are you sure you want to delete this address?');">
+                                            Delete
+                                         </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Proceed to Payment Button -->
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success">Proceed to Payment</button>
+                        </div>
+                    </form>
+
+                    <!-- Add New Address Button -->
+                    <div class="text-center mt-4">
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#addAddressModal">
+                            Add New Address
+                        </button>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="/cart" class="btn btn-secondary btn-lg">Back to Cart</a>
+                    </div>
+                </div>
+
+                <!-- Modal for Adding a New Address -->
+                <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addAddressModalLabel">Add New Address</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Address Form -->
+                                <form th:action="@{/user/add-addresss}" method="post" id="newAddressForm">
+                                    <div class="mb-3">
+                                        <label for="street" class="form-label">Street</label>
+                                        <input type="text" class="form-control" name="street" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="city" class="form-label">City</label>
+                                        <input type="text" class="form-control" name="city" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="state" class="form-label">State</label>
+                                        <input type="text" class="form-control" name="state" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="zipCode" class="form-label">Zip Code</label>
+                                        <input type="text" class="form-control" name="zipCode" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="country" class="form-label">Country</label>
+                                        <input type="text" class="form-control" name="country" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="label" class="form-label">Label (e.g., Home, Work)</label>
+                                        <input type="text" class="form-control" name="label" required>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save Address</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <p>&copy; 2024 eTextile. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        
+    </script>
+</body>
+</html>

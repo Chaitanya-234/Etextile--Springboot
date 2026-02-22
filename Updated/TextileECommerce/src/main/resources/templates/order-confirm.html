@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <header class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <h1>Order Confirmation</h1>
+        </div>
+    </header>
+
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="text-center">Thank you for your purchase!</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- Order Confirmation Details -->
+                        <h4 class="text-center">Order Summary</h4>
+
+                        <!-- Product Information -->
+                        <div class="my-4">
+                            <h5>Product Information</h5>
+                            <p><strong>Product Name:</strong> <span th:text="${order.productName}"></span></p>
+                            <p><strong>Product Price:</strong> ₹<span th:text="${order.totalPrice}"></span></p>
+    
+                        </div>
+
+                        <!-- Selected Address -->
+                        <div class="my-4">
+                            <h5>Shipping Address</h5>
+                            <p th:text="${order.address}"></p>
+                        </div>
+
+                        <!-- Payment Information -->
+                        <div class="my-4">
+                            <h5>Payment Information</h5>
+                            <p><strong>Payment Type:</strong> <span th:text="${order.paymenttype}"></span></p>
+                        </div>
+
+                        <!-- Order Details -->
+                        <div class="my-4">
+                            <h5>Order Details</h5>
+                            <p><strong>Order ID:</strong> <span th:text="${order.id}"></span></p>
+                            <p><strong>Date:</strong> <span th:text="${order.orderDate}"></span></p>
+                            <p><strong>Quantity:</strong> <span th:text="${order.quantity}"> meter</span></p>
+                            <p><strong>Total Price:</strong> ₹<span th:text="${order.totalPrice}"></span></p>
+                        </div>
+
+                        <!-- Back to Home Button -->
+                        <div class="text-center">
+                            <a href="/home" class="btn btn-primary">Back to Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <p>&copy; 2024 eTextile. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

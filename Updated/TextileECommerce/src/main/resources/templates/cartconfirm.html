@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .confirmation-header {
+            background-color: #343a40;
+            color: white;
+            padding: 40px 0;
+        }
+
+        .confirmation-header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .order-summary-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+        }
+
+        .back-home-btn {
+            font-size: 1.2rem;
+            padding: 10px 30px;
+        }
+
+        .order-total {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="confirmation-header text-center">
+        <div class="container">
+            <h1>Order Confirmation</h1>
+        </div>
+    </header>
+
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="alert alert-success text-center">
+                    <h4 class="alert-heading">Thank you for your order!</h4>
+                    <p>Your order has been successfully placed. You will receive an email confirmation shortly.</p>
+                </div>
+
+                <div class="card order-summary-card p-4">
+                    <h5 class="mb-4">Your Order Details:</h5>
+
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${userOrders}">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img th:src="${order.image}" alt="Product Image"
+                                            class="img-thumbnail product-image">
+                                        <div class="ml-3">
+                                            <h6 th:text="${order.productName}" class="mb-0"></h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td th:text="${order.quantity}"></td>
+
+                                <td th:text="'₹' + ${order.totalPrice}"></td>
+                               
+                                
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-right order-total">Total Amount:</td>
+                                <td class="order-total" th:text="'₹' + ${totalorderprice}"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div class="text-center mt-5">
+                    <a href="/home" class="btn btn-primary back-home-btn">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

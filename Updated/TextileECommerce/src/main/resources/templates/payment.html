@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Payment Method</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <header class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <h1>Select Payment Method</h1>
+        </div>
+    </header>
+
+    <div class="container my-5">
+        <div class="text-center">
+            <h4>Choose Your Payment Method</h4>
+            <form id="paymentForm">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#codModal">
+                    Cash on Delivery
+                </button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#onlinePaymentModal">
+                    Online Payment
+                </button>
+            </form>
+        </div>
+
+        <!-- Modal for Cash on Delivery -->
+        <div class="modal fade" id="codModal" tabindex="-1" aria-labelledby="codModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="codModalLabel">Confirm Cash on Delivery</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You have selected Cash on Delivery. Confirm your order?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success" name="paymentMethod" value="COD">Confirm Order</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Online Payment -->
+        <div class="modal fade" id="onlinePaymentModal" tabindex="-1" aria-labelledby="onlinePaymentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="onlinePaymentModalLabel">Online Payment Options</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Select a payment option:</h6>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <input type="radio" name="paymentMethod" value="creditCard"> Credit/Debit Card
+                            </li>
+                            <li class="list-group-item">
+                                <input type="radio" name="paymentMethod" value="upi"> UPI
+                            </li>
+                            <li class="list-group-item">
+                                <input type="radio" name="paymentMethod" value="paypal"> PayPal
+                            </li>
+                        </ul>
+                        <div id="paypal-button-container"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PayPal Script -->
+        <script src="https://www.paypal.com/sdk/js?client-id=AYhubGPVnd2Q_9VdaZ9PhmgZ0LrMAo9_pXOzr1q6aTJOjeLQKYE-CqixyzhGhDaIfR-XydTJ0gvPbgvq"></script>
+        <script>
+            // Initialize PayPal button
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: '10.00' // Set the total amount dynamically
+                            }
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        alert('Transaction completed by ' + details.payer.name.given_name);
+                        // Redirect to confirmation page or handle order completion
+                        window.location.href = '/checkout/confirmation'; // Update with your confirmation page
+                    });
+                },
+                onError: function(err) {
+                    console.error(err);
+                    alert('An error occurred during the transaction.');
+                }
+            }).render('#paypal-button-container');
+
+            // Handle COD form submission
+            document.getElementById('paymentForm').addEventListener('submit', function(event) {
+                // Handle form submission for COD here
+            });
+        </script>
+    </div>
+
+    <footer class="bg-dark text-white py-3">
+        <div class="container text-center">
+            <p>&copy; 2024 eTextile. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

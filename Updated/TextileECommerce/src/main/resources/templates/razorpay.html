@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Razorpay Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+        body {
+            background-color: #f4f4f9;
+        }
+
+        .payment-container {
+            margin-top: 100px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-btn {
+            background-color: #F37254;
+            border: none;
+            padding: 15px 30px;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 1.2em;
+            transition: background-color 0.3s;
+        }
+
+        .payment-btn:hover {
+            background-color: #d65c42;
+        }
+
+        .company-logo {
+            width: 120px;
+            height: auto;
+        }
+
+        .order-summary {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .order-summary h5 {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .order-summary p {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container d-flex justify-content-center">
+        <div class="col-md-6 payment-container text-center">
+            <img src="/images/logo.jpg" alt="Company Logo" class="company-logo mb-3">
+            <h1 class="mb-4">Complete Your Payment</h1>
+
+            <!-- Order Summary -->
+            <div class="order-summary mb-4">
+                <h5>Order Summary</h5>
+                <p><strong>Product:</strong> <span th:text="${orderreq.productName}">Product Name</span></p>
+                <p><strong>Price:</strong> ₹<span th:text="${totalPrice}">Amount</span></p>
+                <p><strong>Quantity:</strong> <span th:text="${orderreq.quantity}">1</span></p>
+                <p><strong>Total:</strong> ₹<span th:text="${totalPrice}">Total Price</span></p>
+            </div>
+
+            <button id="rzp-button1" class="payment-btn">Pay with Razorpay</button>
+        </div>
+    </div>
+    <!-- Razorpay Payment Form -->
+    <form id="razorpay-form" action="/payment/success" method="POST" style="display:none;">
+        <input type="hidden" id="razorpay_payment_id" name="razorpay_payment_id">
+        <input type="hidden" id="razorpay_order_id" name="razorpay_order_id">
+        <input type="hidden" id="razorpay_signature" name="razorpay_signature">
+
+        <!-- Order and Payment Information -->
+        <input type="hidden" id="totalPrice" th:value="${totalPrice }" name="totalPrice">
+        <input type="hidden" id="paymenttype" th:value="online" name="paymenttype">
+        <input type="hidden" id="razorpayid" th:value="${razorpayOrderId}" name="razorpayid">
+
+        <!-- User and Product Information -->
+        <input type="hidden" id="userId" th:value="${user.id}" name="userId">
+        <input type="hidden" id="productId" th:value="${orderreq.productId}" name="productId">
+        <input type="hidden" id="productName" th:value="${orderreq.productName}" name="productName">
+        <input type="hidden" id="productImage" th:value="${orderreq.image}" name="image">
+        <input type="hidden" id="quantity" th:value="${orderreq.quantity}" name="quantity">
+
+        <!-- Additional Information -->
+        <input type="hidden" id="status" th:value="Pending" name="status">
+        <input type="hidden" id="orderDate" th:value="${orderreq.orderDate}" name="orderDate">
+
+        <!-- Address Fields -->
+     <!-- Address Fields -->
+<input type="hidden" id="addressStreet" th:value="${orderreq.address.street}" name="address.street">
+<input type="hidden" id="addressCity" th:value="${orderreq.address.city}" name="address.city">
+<input type="hidden" id="addressState" th:value="${orderreq.address.state}" name="address.state">
+<input type="hidden" id="addressZipCode" th:value="${orderreq.address.zipCode}" name="address.zipCode">
+<input type="hidden" id="addressCountry" th:value="${orderreq.address.country}" name="address.country">
+<input type="hidden" id="addressLabel" th:value="${orderreq.address.label}" name="address.label">
+
+   
+
+        <!-- Prefill Data -->
+        <input type="hidden" id="username" th:value="${user.fullName}" name="username">
+        <input type="hidden" id="email" th:value="${user.email}" name="email">
+    </form>
+
+    <script>
+        // Razorpay Payment Integration
+        document.getElementById('rzp-button1').onclick = function(e) {
+            e.preventDefault(); // Prevent form submission
+
+            var options = {
+                "key": "rzp_test_JfT5Na6ZsaWOpl", // Replace with your Razorpay Key ID
+                "amount": document.getElementById('totalPrice').value*100, // Amount in paise
+                "currency": "INR",
+                "name": "eTextile",
+                "description": "Order Payment",
+                "image": "/images/logo.jpg", // Add your logo URL or path
+                "order_id": document.getElementById('razorpay_order_id').value, // Razorpay Order ID
+                "handler": function(response) {
+                    // On successful payment, pass Razorpay response data to the form
+                    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                    document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+                    document.getElementById('razorpay_signature').value = response.razorpay_signature;
+                    // Submit the form to the backend for further processing
+                    document.getElementById('razorpay-form').submit();
+                },
+                "prefill": {
+                    "name": document.getElementById('username').value, // Prefill with user's name
+                    "email": document.getElementById('email').value, // Prefill with user's email
+                },
+                "theme": {
+                    "color": "#3399cc" // Customize the theme color
+                },
+                "method": {
+        "upi": true, // Ensure UPI is enabled
+        "card": true, // Other payment methods
+        "netbanking": true,
+        "wallet": true
+    }
+            };
+
+            // Initialize the Razorpay checkout
+            var rzp1 = new Razorpay(options);
+            rzp1.open(); // Open the Razorpay checkout modal
+        }
+    </script>
+</body>
+
+</html>
